@@ -1,6 +1,43 @@
+from typing import Any, List, Dict
 from database import get_db_connection
 
-def obtener_historial_limitado(id_vehiculo: int):
+def ejecutar_sp_lectura(sp_name: str, params: tuple = ()) -> List[Dict[str, Any]]:
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.callproc(sp_name, params)
+        resultados = []
+        for result in cursor.stored_results():
+            resultados.extend(result.fetchall())
+        return resultados
+    finally:
+        cursor.close()
+        conn.close()
+
+def ejecutar_sp_escritura(sp_name: str, params: tuple = ()) -> Any:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.callproc(sp_name, params)
+        inserted_id = None
+        
+        for result in cursor.stored_results():
+            rows = result.fetchall()
+            if rows:
+                # Convertimos explícitamente a lista para evitar el error de Pylance
+                primera_fila = list(rows[0])
+                inserted_id = primera_fila[0]
+                
+        conn.commit()
+        return inserted_id
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conn.close()
+
+def obtener_historial_limitado(id_vehiculo: int) -> List[Dict[str, Any]]:
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
@@ -14,16 +51,27 @@ def obtener_historial_limitado(id_vehiculo: int):
         cursor.close()
         conn.close()
 
-def procesar_movimiento_individual(id_vehiculo: int, id_comando: int):
+def procesar_movimiento_individual(id_vehiculo: int, id_comando: int) -> bool:
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         # Transacción atómica
         conn.start_transaction()
-        # Actualiza el estado (conectado = True para simular la petición web)
+        
+        # 1er SP: Actualizar estado
         cursor.callproc('sp_actualizar_estado', [id_vehiculo, id_comando, True])
-        # Registra en el historial
+        
+        # Limpiamos los resultados remanentes del cursor
+        for _ in cursor.stored_results():
+            _.fetchall()
+            
+        # 2do SP: Registrar en historial
         cursor.callproc('sp_registrar_historial', [id_vehiculo, id_comando, 'API_POST'])
+        
+        # Limpieza final
+        for _ in cursor.stored_results():
+            _.fetchall()
+            
         conn.commit()
         return True
     except Exception as e:
@@ -33,7 +81,7 @@ def procesar_movimiento_individual(id_vehiculo: int, id_comando: int):
         cursor.close()
         conn.close()
 
-def obtener_movimientos_demo(id_demo: int):
+def obtener_movimientos_demo(id_demo: int) -> List[Dict[str, Any]]:
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
@@ -46,15 +94,17 @@ def obtener_movimientos_demo(id_demo: int):
         cursor.close()
         conn.close()
 
-def actualizar_estado_simple(id_vehiculo: int, id_comando: int):
+def actualizar_estado_simple(id_vehiculo: int, id_comando: int) -> None:
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
         cursor.callproc('sp_actualizar_estado', [id_vehiculo, id_comando, True])
+        
+        # Limpieza de seguridad
+        for _ in cursor.stored_results():
+            _.fetchall()
+            
         conn.commit()
     finally:
         cursor.close()
         conn.close()
-
-# Nota: Para completar la práctica debes añadir métodos similares 
-# para los SP de CRUD restantes (sp_crear_vehiculo, etc.)
