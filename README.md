@@ -1,4 +1,4 @@
-# 🏗️ API Grúa RC IoT - Práctica 2.5
+# API Grúa RC IoT - Práctica 2.5
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)
@@ -11,16 +11,7 @@ El sistema se conecta a una base de datos **MySQL** alojada en la nube mediante 
 
 ---
 
-## 🚀 Características Principales
-
-* **Control en Tiempo Real:** Transmisión de comandos de movimiento y secuencias automáticas (DEMO) mediante **WebSockets**.
-* **Arquitectura Robusta:** Uso exclusivo de procedimientos almacenados (Stored Procedures) para todas las operaciones de lectura y escritura en la base de datos.
-* **Alta Disponibilidad:** Base de datos centralizada en AWS RDS, permitiendo el control remoto desde cualquier cliente web o móvil.
-* **Documentación Interactiva:** Endpoints HTTP auto-documentados gracias a la integración nativa de Swagger UI con FastAPI.
-
----
-
-## 📋 Requisitos Previos
+## Requisitos Previos
 
 Para ejecutar este proyecto en un entorno local, necesitas tener instalado:
 
@@ -30,7 +21,7 @@ Para ejecutar este proyecto en un entorno local, necesitas tener instalado:
 
 ---
 
-## 🛠️ Instalación y Ejecución Local (Entorno de Desarrollo)
+## Instalación y Ejecución Local (Entorno de Desarrollo)
 
 Sigue estos pasos para levantar el servidor en tu máquina local:
 
@@ -63,7 +54,7 @@ cp .env.example .env
 ```
 Abre el archivo `.env` y reemplaza los valores genéricos con las credenciales reales de tu instancia de Amazon RDS.
 
-> ⚠️ **Importante:** El archivo `.env` está excluido en el `.gitignore` por seguridad. **Nunca** subas tus credenciales o contraseñas de AWS a GitHub.
+> **Importante:** El archivo `.env` está excluido en el `.gitignore` por seguridad. **Nunca** subas tus credenciales o contraseñas de AWS a GitHub.
 
 **5. Ejecutar el servidor local:**
 ```bash
@@ -72,15 +63,15 @@ uvicorn main:app --reload
 
 ---
 
-## 📚 Documentación de Endpoints HTTP (Swagger UI)
+## Documentación de Endpoints HTTP (Swagger UI)
 
 Una vez que el servidor local esté corriendo, puedes explorar la documentación interactiva de la API, ver los modelos de datos y probar los endpoints (GET, POST, PUT, DELETE) directamente desde tu navegador:
 
-🔗 **[http://localhost:8000/docs](http://localhost:8000/docs)**
+ **[http://localhost:8000/docs](http://localhost:8000/docs)**
 
 ---
 
-## 📡 Monitoreo en Tiempo Real (WebSockets)
+## Monitoreo en Tiempo Real (WebSockets)
 
 Swagger UI no soporta pruebas de conexiones WebSockets de forma nativa. Para monitorear la telemetría y los comandos de la grúa en tiempo real, utiliza una herramienta como [Thunder Client](https://www.thunderclient.com/), Postman o cualquier cliente WebSocket.
 
@@ -132,6 +123,3 @@ Al iniciar una secuencia automática enviando un `POST` a `/api/vehiculos/{id_ve
   "timestamp": "2026-10-15T10:01:10.123456"
 }
 ```
-
----
-*Desarrollado para la materia de Programación Web / Desarrollo de Sistemas.*
