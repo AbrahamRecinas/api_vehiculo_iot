@@ -4,7 +4,6 @@ import json
 
 class ConnectionManager:
     def __init__(self):
-        # Diccionario: { id_vehiculo: [WebSocket, WebSocket, ...] }
         self.active_connections: Dict[int, List[WebSocket]] = {}
 
     async def connect(self, websocket: WebSocket, id_vehiculo: int):
@@ -20,6 +19,6 @@ class ConnectionManager:
     async def broadcast_to_vehiculo(self, id_vehiculo: int, message: dict):
         if id_vehiculo in self.active_connections:
             for connection in self.active_connections[id_vehiculo]:
-                await connection.send_text(json.dumps(message))
+                await connection.send_text(json.dumps(message, default=str))
 
 manager = ConnectionManager()

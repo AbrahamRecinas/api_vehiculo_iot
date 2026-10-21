@@ -37,7 +37,7 @@ async def registrar_movimiento(id_vehiculo: int, req: MovimientoRequest):
     except Exception as e:
         raise HTTPException(status_code=400, detail="Error al registrar movimiento: Verifica que el comando pertenezca al vehículo.")
 
-    # ==========================================
+# ==========================================
 # VEHÍCULOS (5 SPs)
 # ==========================================
 @router.get("/")
@@ -56,13 +56,13 @@ def crear_vehiculo(req: VehiculoBase):
         (req.nombre, req.modelo, req.descripcion, req.microcontrolador))
     return {"mensaje": "Vehículo creado", "id_vehiculo": nuevo_id}
 
-@router.put("/{id_vehiculo}")
+@router.post("/{id_vehiculo}/actualizar")
 def actualizar_vehiculo(id_vehiculo: int, req: VehiculoUpdate):
     db_services.ejecutar_sp_escritura('sp_actualizar_vehiculo', 
         (id_vehiculo, req.nombre, req.modelo, req.descripcion, req.microcontrolador, req.activo))
     return {"mensaje": "Vehículo actualizado"}
 
-@router.delete("/{id_vehiculo}")
+@router.post("/{id_vehiculo}/eliminar")
 def eliminar_vehiculo(id_vehiculo: int):
     db_services.ejecutar_sp_escritura('sp_eliminar_vehiculo', (id_vehiculo,))
     return {"mensaje": "Vehículo eliminado"}
@@ -87,13 +87,13 @@ def crear_comando(id_vehiculo: int, req: ComandoBase):
         (id_vehiculo, req.nombre, req.codigo, req.descripcion))
     return {"mensaje": "Comando creado", "id_comando": nuevo_id}
 
-@router.put("/comandos/{id_comando}")
+@router.post("/comandos/{id_comando}/actualizar")
 def actualizar_comando(id_comando: int, req: ComandoUpdate):
     db_services.ejecutar_sp_escritura('sp_actualizar_comando', 
         (id_comando, req.nombre, req.codigo, req.descripcion, req.activo))
     return {"mensaje": "Comando actualizado"}
 
-@router.delete("/comandos/{id_comando}")
+@router.post("/comandos/{id_comando}/eliminar")
 def eliminar_comando(id_comando: int):
     db_services.ejecutar_sp_escritura('sp_eliminar_comando', (id_comando,))
     return {"mensaje": "Comando eliminado"}
@@ -111,13 +111,13 @@ def crear_demo(id_vehiculo: int, req: DemoBase):
         (id_vehiculo, req.nombre, req.descripcion))
     return {"mensaje": "Demo creada", "id_demo": nuevo_id}
 
-@router.put("/demos/{id_demo}")
+@router.post("/demos/{id_demo}/actualizar")
 def actualizar_demo(id_demo: int, req: DemoUpdate):
     db_services.ejecutar_sp_escritura('sp_actualizar_demo', 
         (id_demo, req.nombre, req.descripcion, req.activo))
     return {"mensaje": "Demo actualizada"}
 
-@router.delete("/demos/{id_demo}")
+@router.post("/demos/{id_demo}/eliminar")
 def eliminar_demo(id_demo: int):
     db_services.ejecutar_sp_escritura('sp_eliminar_demo', (id_demo,))
     return {"mensaje": "Demo eliminada"}
@@ -135,13 +135,13 @@ def agregar_movimiento_demo(id_demo: int, req: MovimientoDemoBase):
         (id_demo, req.id_comando, req.orden, req.duracion_ms, req.pausa_ms))
     return {"mensaje": "Movimiento de demo agregado"}
 
-@router.put("/movimientos_demo/{id_demo_movimiento}")
+@router.post("/movimientos_demo/{id_demo_movimiento}/actualizar")
 def actualizar_movimiento_demo(id_demo_movimiento: int, req: MovimientoDemoBase):
     db_services.ejecutar_sp_escritura('sp_actualizar_movimiento_demo', 
         (id_demo_movimiento, req.id_comando, req.orden, req.duracion_ms, req.pausa_ms))
     return {"mensaje": "Movimiento de demo actualizado"}
 
-@router.delete("/movimientos_demo/{id_demo_movimiento}")
+@router.post("/movimientos_demo/{id_demo_movimiento}/eliminar")
 def eliminar_movimiento_demo(id_demo_movimiento: int):
     db_services.ejecutar_sp_escritura('sp_eliminar_movimiento_demo', (id_demo_movimiento,))
     return {"mensaje": "Movimiento de demo eliminado"}
